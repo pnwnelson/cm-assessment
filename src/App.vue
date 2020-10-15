@@ -1,18 +1,29 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <!-- Sending the 'cities' information via props to the child component -->
+    <Navigation :cities="cities"/>
+    <!-- Place city data inside this router view -->
+    <router-view />
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import Navigation from './components/navigation'
 
 export default {
   name: 'App',
+
+  data () {
+    return {
+      // Bring in the city data
+      cities: require('@/assets/navigation.json')
+    }
+  },
+
   components: {
-    HelloWorld
+    Navigation
   }
+
 }
 </script>
 
@@ -22,7 +33,7 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
+  color: Silver;
   margin-top: 60px;
 }
 </style>
