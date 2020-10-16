@@ -23,11 +23,11 @@ export default {
     return {
       currentTime: null,
       error: null,
-      fetching: true // adding some spinneryish stuff
+      fetching: true // adding some crude spinneryish stuff
     }
   },
 
-  // Big fix - First city click wasn't fetching the time until the second click activated the 'watch' lifecycle.
+  // Bug fix - First city click wasn't fetching the time until the second click activated the 'watch' lifecycle.
   created () {
     if (!this.currentTime) {
       this.getCityTime()
@@ -47,6 +47,10 @@ export default {
   methods: {
     getCityTime () {
       this.fetching = true
+      // Error on initial page load saying city.section was undefined. Checking for it first, returning if this is initial page load.
+      if (!this.city.section) {
+        return 
+      }
       // TimezoneDB API requires multiword cities to be separated by underscores instead of hyphens.
       let modifiedCityName = this.city.section.replace(/-/g, '_')
       // Normally I would put the api key in a environment variable. Even though I'll be closing my access after the interview phase, please don't share the key ;)
