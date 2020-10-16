@@ -1,9 +1,10 @@
 <template>
   <div class="container">
     <h1>{{city.label}}</h1>
-    <p v-show="city.label">
-      The current time in {{city.label}} is <strong>{{currentTime}}</strong>
-    </p>
+    <div v-show="city.label">
+      <p v-if="!fetching">The current time in {{city.label}} is <strong>{{currentTime}}</strong></p>
+      <p v-else>Fetching time...</p>
+    </div>
     <!-- static error message -->
     <p v-if="error" class="error">There was an error retrieving the time for {{city.label}}</p>
   </div>
@@ -21,7 +22,15 @@ export default {
   data () {
     return {
       currentTime: null,
-      error: null
+      error: null,
+      fetching: true // adding some spinneryish stuff
+    }
+  },
+
+  // Big fix - First city click wasn't fetching the time until the second click activated the 'watch' lifecycle.
+  created () {
+    if (!this.currentTime) {
+      this.getCityTime()
     }
   },
 
@@ -37,7 +46,8 @@ export default {
 
   methods: {
     getCityTime () {
-      // TimezoneDB API requires multiword cities to be separated by underscore instead of hyphens.
+      this.fetching = true
+      // TimezoneDB API requires multiword cities to be separated by underscores instead of hyphens.
       let modifiedCityName = this.city.section.replace(/-/g, '_')
       // Normally I would put the api key in a environment variable. Even though I'll be closing my access after the interview phase, please don't share the key ;)
       fetch(`http://vip.timezonedb.com/v2.1/get-time-zone?key=ML747CN77Z01&by=city&city=${modifiedCityName}&country=${this.city.countryCode}&format=json`, {
@@ -48,15 +58,19 @@ export default {
         if (resp.ok) {
           resp.json()
             .then((data) => {
+              // Using momentjs to convert to humna readable time.
               this.currentTime = moment.unix(data.zones[0].timestamp).utc().format('dddd, MMMM Do, YYYY h:mm:ss A')
+              this.fetching = false
             })
         } else {
           this.error = true
+          this.fetching = false
         }
 
       })
       .catch((error) => {
         this.error = error.message
+        this.fetching = false
       })
     }
   }

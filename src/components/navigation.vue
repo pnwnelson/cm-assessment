@@ -4,7 +4,6 @@
       <ul class="container">
         <li v-for="city in cities.cities" :key="city.label">
           <router-link
-            ref="link"
             :to="{
               path: '/' + city.section,
               // Sending city information to the city-time component inside the router-view via query parameters
@@ -15,11 +14,11 @@
             class="nav-items"
           >
           {{city.label}}
-          </router-link>        
+          </router-link>             
         </li>
+        <span class="underline" ref="underline"></span>
       </ul>
     </nav>
-    <span class="underline" ref="underline"></span>
   </div>
 </template>
 
@@ -27,20 +26,20 @@
 export default {
   name: 'navigation',
 
-  props: ['cities'],
-
+  props: ['cities']
 
 }
 </script>
 
 <style scoped>
+
 ul {
   list-style: none;
   padding: 0px;
 }
 
 li {
-  padding: 0px 20px 10px 20px;
+  padding: 0px 20px 0px 20px;
 }
 .container {
   display: inline-flex;
@@ -51,12 +50,8 @@ li {
 
 .container a.router-link-active {
   color: black;
-}
-
-.underline {
-  position: absolute;
-  border-bottom: 4px solid transparent;
-  z-index: -1;
+  padding-bottom: 10px;
+  border-bottom: 1px solid black;
   transform: translateX(-60px);
 }
 
@@ -70,7 +65,4 @@ li {
   cursor: pointer;
 }
 
-.nav-items:active {
-  color: black;
-}
 </style>
